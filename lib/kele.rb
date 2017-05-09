@@ -3,7 +3,7 @@ require 'json'
 require 'httparty'
 
 class Kele
-  attr_accessor :auth_token, :user_data, :mentor_avail, :json_user_data_response
+  attr_accessor :auth_token, :user_data, :mentor_avail, :json_user_data_response, :ids, :tokens
   
   include JSON
   include HTTParty
@@ -31,4 +31,27 @@ class Kele
      puts mentor_app_details
   end
   
+  def get_messages(pages)
+     response = self.class.get("https://www.bloc.io/api/v1/message_threads", body: {page: pages}, headers: {authorization: @auth_token})
+     messages = JSON.parse(response.body)
+     puts messages
+     puts "========================="
+     items = messages["items"]
+     @ids = []
+     @tokens = []
+     items.each {|item| @ids << item["id"]}
+     puts @ids
+     items.each {|item| @tokens << item["token"]}
+     puts @tokens
+     puts "========================="
+  end
+  
+  def create_message
+    response = self.class.post("https://www.bloc.io/api/v1/messages", body: {"sender": "meghana1602@gmail.com", "recipient_id": @ids[0], "token": "#{@tokens[0]}", "subject": "", "stripped-text": "Testing if I can send messages through BLOC API"}, headers: {authorization: @auth_token})
+    if response.code == 200
+      puts "Sent the message!!! #{response.body }"
+    else
+      puts "Something went wrong in trying to send message!!!"
+    end
+  end
 end
