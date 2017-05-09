@@ -54,4 +54,27 @@ class Kele
       puts "Something went wrong in trying to send message!!!"
     end
   end
+  
+  def create_submission(checkpoint_id, assignment_branch, assignment_commit_link, comment)
+    enrollment_id = @user_data["id"]
+    response = self.class.post("https://www.bloc.io/api/v1/checkpoint_submissions", 
+                              body: {assignment_branch:      assignment_branch, 
+                                     assignment_commit_link: assignment_commit_link, 
+                                     checkpoint_id:          checkpoint_id, 
+                                     comment:                comment, 
+                                     enrollment_id:          enrollment_id
+                                    }, 
+                              headers: {authorization: @auth_token}
+                            )  
+    if response.code == 200
+      "Submission successfull!!"
+    else
+      puts "Something went wrong with submission."
+    end                     
+  end
+#  checkpoint_id = 2162
+#  assignment_branch = "Checkpoint-7-Submission"
+#  assignment_commit_link = "https://github.com/meghana-singh/kele/tree/Checkpoint-7-Submission"
+#  comment = "In progress"
+
 end
