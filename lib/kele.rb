@@ -1,12 +1,13 @@
+require_relative 'roadmap'
 require 'json'
 require 'httparty'
-
 
 class Kele
   attr_accessor :auth_token, :user_data, :mentor_avail, :json_user_data_response
   
   include JSON
   include HTTParty
+  include Roadmap
   
   def initialize(email, pwd)
     response = self.class.post("https://www.bloc.io/api/v1/sessions", body: {email: email, password: pwd})
